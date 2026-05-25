@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aeroloop — Adaptive Breathing & Recovery for Garmin</title>
+<meta name="description" content="Your Garmin already knows how your body feels. Aeroloop turns HRV, Stress, and Body Battery into the right breathing session — automatically.">
+<meta property="og:title" content="Aeroloop — Adaptive Breathing & Recovery">
+<meta property="og:description" content="Intelligent breathing app for Garmin. Reads your HRV, stress, and Body Battery to recommend the perfect breathing protocol.">
+<meta property="og:image" content="https://srothstein84.github.io/Aeroloop/aeroloop-hero.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #000;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  a { color: #00AAFF; text-decoration: none; transition: opacity 0.2s; }
+  a:hover { opacity: 0.7; }
+
+  /* ── Hero ────────────────────────────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px;
+    text-align: center;
+    background: radial-gradient(circle at center, #0a1a25 0%, #000 70%);
+  }
+  .logo-glyph {
+    width: 140px;
+    height: 140px;
+    margin-bottom: 32px;
+    position: relative;
+    filter: drop-shadow(0 0 40px rgba(0, 170, 255, 0.4));
+  }
+  .ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 4px solid #00AAFF;
+    border-radius: 50%;
+    background: transparent;
+  }
+  .ring-1 { transform: translate(-8%, -8%); border-color: #fff; opacity: 0.9; }
+  .ring-2 { transform: translate(8%, 8%); border-color: #00AAFF; opacity: 0.9; }
+
+  .wordmark {
+    font-size: 56px;
+    font-weight: 200;
+    letter-spacing: 14px;
+    margin-bottom: 12px;
+    color: #fff;
+  }
+  .tagline {
+    font-size: 16px;
+    letter-spacing: 4px;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 56px;
+  }
+  .hero-hook {
+    font-size: 32px;
+    font-weight: 300;
+    max-width: 700px;
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+  .hero-hook .accent { color: #00AAFF; }
+  .hero-sub {
+    font-size: 18px;
+    color: #aaa;
+    max-width: 600px;
+    margin-bottom: 48px;
+  }
+  .cta {
+    display: inline-block;
+    background: #00AAFF;
+    color: #000;
+    padding: 16px 40px;
+    border-radius: 50px;
+    font-weight: 500;
+    font-size: 17px;
+    letter-spacing: 1px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 170, 255, 0.3);
+    opacity: 1;
+  }
+
+  /* ── Sections ────────────────────────────────────────────── */
+  section {
+    padding: 100px 24px;
+    border-top: 1px solid #1a1a1a;
+  }
+  .section-label {
+    font-size: 12px;
+    letter-spacing: 6px;
+    color: #00AAFF;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: 42px;
+    font-weight: 200;
+    margin-bottom: 24px;
+    line-height: 1.2;
+  }
+  .section-lead {
+    font-size: 18px;
+    color: #aaa;
+    max-width: 700px;
+    margin-bottom: 56px;
+  }
+
+  /* ── Features grid ───────────────────────────────────────── */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+    margin-top: 56px;
+  }
+  .feature {
+    padding: 32px;
+    border: 1px solid #1a1a1a;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #0a0a0a 0%, transparent 100%);
+    transition: border-color 0.3s;
+  }
+  .feature:hover { border-color: #00AAFF; }
+  .feature-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    color: #00AAFF;
+  }
+  .feature-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .feature-desc {
+    color: #888;
+    font-size: 15px;
+  }
+
+  /* ── Protocols list ──────────────────────────────────────── */
+  .protocols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin-top: 40px;
+  }
+  .protocol {
+    padding: 24px;
+    text-align: left;
+  }
+  .protocol-name {
+    font-size: 22px;
+    color: #00AAFF;
+    margin-bottom: 4px;
+  }
+  .protocol-pattern {
+    font-size: 13px;
+    color: #666;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .protocol-desc {
+    font-size: 14px;
+    color: #aaa;
+  }
+
+  /* ── How it works ────────────────────────────────────────── */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 48px;
+    margin-top: 56px;
+  }
+  .step {
+    text-align: center;
+  }
+  .step-num {
+    font-size: 72px;
+    font-weight: 100;
+    color: #00AAFF;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .step-title {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+  .step-desc {
+    color: #888;
+    font-size: 15px;
+  }
+
+  /* ── Privacy callout ─────────────────────────────────────── */
+  .privacy {
+    text-align: center;
+    background: linear-gradient(180deg, transparent 0%, #050505 50%, transparent 100%);
+  }
+  .privacy-headline {
+    font-size: 36px;
+    font-weight: 200;
+    margin-bottom: 16px;
+  }
+  .privacy-headline .accent { color: #00AAFF; }
+
+  /* ── Footer ──────────────────────────────────────────────── */
+  footer {
+    padding: 60px 24px 80px;
+    text-align: center;
+    border-top: 1px solid #1a1a1a;
+    color: #555;
+    font-size: 14px;
+  }
+  footer a { color: #888; margin: 0 16px; }
+  .footer-brand {
+    font-size: 12px;
+    letter-spacing: 6px;
+    margin-bottom: 24px;
+    color: #444;
+  }
+
+  /* ── Responsive ──────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .wordmark { font-size: 36px; letter-spacing: 8px; }
+    .hero-hook { font-size: 24px; }
+    .section-title { font-size: 32px; }
+    section { padding: 60px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── Hero ─────────────────────────────────────────── -->
+<section class="hero">
+  <div class="logo-glyph">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+  </div>
+  <h1 class="wordmark">AEROLOOP</h1>
+  <p class="tagline">Adaptive Breathing &amp; Recovery</p>
+
+  <h2 class="hero-hook">
+    Your Garmin already knows how your body feels.<br>
+    <span class="accent">Aeroloop turns that data into action.</span>
+  </h2>
+  <p class="hero-sub">
+    An intelligent breathing app for Garmin watches. We read your HRV, Stress Score,
+    Body Battery, and heart rate to recommend the right breathing protocol for how
+    you feel right now — automatically.
+  </p>
+
+  <a href="https://apps.garmin.com" class="cta">Get on Connect IQ Store →</a>
+</section>
+
+<!-- ─── Why different ───────────────────────────────── -->
+<section class="container">
+  <p class="section-label">What makes it different</p>
+  <h2 class="section-title">Smart physiological diagnosis.<br>Not generic breathing routines.</h2>
+  <p class="section-lead">
+    Before each session, Aeroloop scans your biometric signals and detects signs of
+    stress overload, mental fatigue, low recovery readiness, overtraining, or sleep
+    debt — then prescribes the technique your nervous system actually needs.
+  </p>
+
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">◐</div>
+      <h3 class="feature-title">Diagnose Mode</h3>
+      <p class="feature-desc">8-second scan reads HRV, stress, Body Battery, and HR. Classifies your state across 8 categories. Recommends the optimal protocol.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">∿</div>
+      <h3 class="feature-title">HRV Trend Tracking</h3>
+      <p class="feature-desc">30-day HRV sparkline on your wrist. See how your nervous system adapts to training, sleep, and stress.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">◍</div>
+      <h3 class="feature-title">Real Metrics, Real Feedback</h3>
+      <p class="feature-desc">Every session ends with HRV delta, stress reduction, heart rate trend, and breathing coherence — color-coded for instant reading.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⌇</div>
+      <h3 class="feature-title">Haptic-Guided Breathing</h3>
+      <p class="feature-desc">Distinct vibration patterns for inhale, hold, exhale. Practice eyes-closed — your wrist guides you.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">∞</div>
+      <h3 class="feature-title">Garmin Connect Integration</h3>
+      <p class="feature-desc">Sessions saved as FIT activities. Track breathwork alongside runs, rides, and recovery days in Garmin Connect.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⚡</div>
+      <h3 class="feature-title">Low Battery Impact</h3>
+      <p class="feature-desc">Built for round MIP displays. AMOLED-aware. Optimized for the slow CPUs of wearables. Premium minimal interface.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Protocols ──────────────────────────────────── -->
+<section class="container">
+  <p class="section-label">Science-based protocols</p>
+  <h2 class="section-title">Choose your technique<br>or let Diagnose decide.</h2>
+
+  <div class="protocols">
+    <div class="protocol">
+      <h3 class="protocol-name">Box</h3>
+      <p class="protocol-pattern">4 · 4 · 4 · 4</p>
+      <p class="protocol-desc">Focus & cognitive reset. Used by Navy SEALs.</p>
+    </div>
+    <div class="protocol">
+      <h3 class="protocol-name">4·7·8</h3>
+      <p class="protocol-pattern">4 · 7 · 8 · 0</p>
+      <p class="protocol-desc">Sleep onset, wind-down. Andrew Weil method.</p>
+    </div>
+    <div class="protocol">
+      <h3 class="protocol-name">Resonant</h3>
+      <p class="protocol-pattern">5 · 5</p>
+      <p class="protocol-desc">HRV coherence, deep calm. Best evidence base.</p>
+    </div>
+    <div class="protocol">
+      <h3 class="protocol-name">Slow 4·6</h3>
+      <p class="protocol-pattern">4 · 6</p>
+      <p class="protocol-desc">Parasympathetic recovery. Long exhale dominance.</p>
+    </div>
+    <div class="protocol">
+      <h3 class="protocol-name">Bhastrika</h3>
+      <p class="protocol-pattern">2 · 2 × 30</p>
+      <p class="protocol-desc">Bellows breath. Yogic energizer.</p>
+    </div>
+    <div class="protocol">
+      <h3 class="protocol-name">Custom</h3>
+      <p class="protocol-pattern">your rhythm</p>
+      <p class="protocol-desc">Configure your own pattern.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── How it works ───────────────────────────────── -->
+<section class="container">
+  <p class="section-label">How it works</p>
+  <h2 class="section-title">From wrist data<br>to nervous-system regulation.</h2>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3 class="step-title">Scan</h3>
+      <p class="step-desc">Tap Diagnose. We read your HR, HRV, stress, and Body Battery in 8 seconds.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3 class="step-title">Diagnose</h3>
+      <p class="step-desc">Our classifier identifies your state — stressed, wired, depleted, recovering, ready.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3 class="step-title">Breathe</h3>
+      <p class="step-desc">Follow the haptic-guided session. See how your HRV, stress, and HR responded.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Privacy ────────────────────────────────────── -->
+<section class="privacy">
+  <p class="section-label">Privacy-first</p>
+  <h2 class="privacy-headline">Your data stays <span class="accent">on your watch</span>.</h2>
+  <p class="hero-sub">
+    No cloud. No tracking. No network. Anonymous usage stats are local-only and can
+    be disabled in Settings.
+  </p>
+  <br>
+  <a href="PRIVACY">Read full privacy policy →</a>
+</section>
+
+<!-- ─── Footer ─────────────────────────────────────── -->
+<footer>
+  <div class="footer-brand">AEROLOOP</div>
+  <a href="https://apps.garmin.com">Connect IQ Store</a>
+  <a href="PRIVACY">Privacy</a>
+  <a href="mailto:stephanrothstein@hotmail.com">Contact</a>
+  <p style="margin-top: 24px; font-size: 13px;">
+    Built with care in Mexico City · © 2026
+  </p>
+</footer>
+
+</body>
+</html>
